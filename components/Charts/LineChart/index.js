@@ -1,27 +1,27 @@
-import HighchartsReact from 'highcharts-react-official'
-import Highchart from 'highcharts'
-import React from 'react'
+import HighchartsReact from "highcharts-react-official";
+import Highchart from "highcharts";
+import React, { useEffect, useState } from "react";
+import moment from "moment";
+import { Button, ButtonGroup } from "@material-ui/core";
 
-const generateOptions = () => {
+const generateOptions = (data) => {
+  const categories = data.map((item) => moment(item.Date).format("DD/MM/YYYY"));
   return {
     chart: {
       height: 500,
     },
     title: {
-      text: 'Tổng ca nhiễm',
+      text: "Tổng ca nhiễm",
     },
     xAxis: {
       categories: categories,
       crosshair: true,
     },
-    colors: [#F3585B],
+    colors: ["#F3585B"],
     yAxis: {
       min: 0,
       title: {
         text: null,
-      },
-      labels: {
-        align: 'right',
       },
     },
     tooltip: {
@@ -29,7 +29,7 @@ const generateOptions = () => {
       pointFormat:
         '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
         '<td style="padding:0"><b>{point.y} ca</b></td></tr>',
-      footerFormat: '</table>',
+      footerFormat: "</table>",
       shared: true,
       useHTML: true,
     },
@@ -41,20 +41,63 @@ const generateOptions = () => {
     },
     series: [
       {
-        name: 'Tổng Ca nhiễm',
+        name: "Tổng Ca nhiễm",
         data: data.map((item) => item.Confirmed),
       },
     ],
   };
 };
 
-export default function LineChart() {
+export default function LineChart({ data }) {
+  const [options, setOptions] = useState({});
+  const [reportType, setReportStyle] = useState("all");
+
+  useEffect(() => {
+    // Xu ly thay doi reportType
+    let customData = [];
+    switch (reportType) {
+      case "all":
+        customData = data;
+        break;
+      case "30":
+        customData = data.slice(data.length - 30);
+        break;
+      case "7":
+        customData = data.slice(data.length - 7);
+        break;
+      default:
+        customData = data;
+        break;
+    }
+    setOptions(generateOptions(customData));
+  }, [data, reportType]);
+
   return (
     <div>
-      <HighchartsReact 
-        highchart = {Highchart}
-        options = {{}}
-      />
+      <ButtonGroup
+        size="small"
+        style={{ display: "flex", justifyContent: "flex-end" }}
+      >
+        <Button
+          color={reportType === "all" ? "secondary" : ""}
+          onClick={() => setReportStyle("all")}
+        >
+          Tất cả
+        </Button>
+        <Button
+          color={reportType === "30" ? "secondary" : ""}
+          onClick={() => setReportStyle("30")}
+        >
+          30 ngày
+        </Button>
+        <Button
+          color={reportType === "7" ? "secondary" : ""}
+          onClick={() => setReportStyle("7")}
+        >
+          7 ngày
+        </Button>
+      </ButtonGroup>
+      <HighchartsReact highcharts={Highchart} options={options} />
     </div>
-  )
+  );
 }

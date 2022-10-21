@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 import {
   FormControl,
   FormHelperText,
@@ -11,7 +11,7 @@ function CountrySelector({ value, handleOnChange, countries }) {
     <>
       <FormControl>
         <InputLabel htmlFor="country-selector" shrink>
-          Country
+          Quốc Gia
         </InputLabel>
         <NativeSelect
           value={value}

@@ -3,7 +3,7 @@ import Highchart from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import highchartsMap from "highcharts/modules/map";
 
-highchartsMap(Highchart);
+// highchartsMap(Highchart);
 
 const initOptions = {
   chart: {
